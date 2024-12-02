@@ -1,0 +1,212 @@
+import random
+
+
+# Base Character class
+
+class Character:
+    def __init__(self, name, health, attack_power, special_attack_power_max):
+        self.name = name
+        self.health = health
+        self.attack_power = attack_power
+        self.max_health = health
+        self.special_attack_power_max = special_attack_power_max
+        self.block = False
+
+    def attack(self, opponent):
+        if self.block == True:
+            opponent.health -= 0
+        else:
+            attack_power = random.randint(1, self.attack_power)
+            opponent.health -= attack_power
+            print(f"{self.name} attacks {opponent.name} for {attack_power} damage!")
+        if opponent.health <= 0:
+            print(f"{opponent.name} has been defeated!")
+            
+    def dodge_attack(self):
+        self.block=True
+            
+    def special_ability(self, opponent):
+        print("\nSPECIAL ABILITIES")
+        print("-"*30)
+        if isinstance(self, Warrior):
+            print("1. RAGE (Bonus Damage)")
+            print("2. Dodge (Block the next attack)")
+        elif isinstance(self, Mage):
+            print("1. Fireball (Bonus Damage)")
+            print("2. Invisibility (Block the next attack)")
+        elif isinstance(self, Archer):
+            print("1. Double Arrow Attack (Bonus Damage)")
+            print("2. Evade (Block the next attack)")
+        elif isinstance(self, Paladin):
+            print("1. Holy Strike (Bonus Damage)")
+            print("2. Divine Shield (Block the next attack)")
+        elif isinstance(self, Monk):
+            print("1. Meditation (Bonus Damage)")
+            print("2. Prayer (Block the next attack)")
+        elif isinstance(self, Assassin):
+            print("1. Killing Blow (Bonus Damage)")
+            print("2. Scatter (Block the next attack)")
+        special_ability_choice = input("\nWhich special ability would you like to use? ")
+        if special_ability_choice == '1':
+            special_ability_power = random.randint(1, self.special_attack_power_max)
+            opponent.health -= special_ability_power
+            print(f"{self.name} attacks {opponent.name} using a special ability for {special_ability_power} damage!")
+            if opponent.health <= 0:
+                print(f"{opponent.name} has been defeated!")
+        elif special_ability_choice == '2':
+            print("You will attempt to dodge the next attack!")
+            self.dodge_attack()                
+        else:
+            print("Invalid input... defaulting to selection 1")
+            opponent.health -= random.randint(self.attack_power, self.special_attack_power)
+            print(f"{self.name} attacks {opponent.name} for {self.attack_power} damage!")
+            if opponent.health <= 0:
+                print(f"{opponent.name} has been defeated!")
+                
+
+    def regenerate(self):
+        if self.health == self.max_health:
+            print("You are already at maximum health!")
+            print(f"Current health is: {self.health}")
+            # stop the regen
+        else:
+            if self.health + 15 > self.max_health:
+                self.health = self.max_health
+                print(f"{self.name} regenerates to full health! Current health: {self.health}")
+            else:
+                self.health += 15
+                print(f"{self.name} regerates 15 health! Current health: {self.health}")
+
+    def display_stats(self):
+        print(f"{self.name}'s Stats - Health: {self.health}/{self.max_health}, Attack Power: {self.attack_power}")
+
+# Warrior class (inherits from Character)
+class Warrior(Character):
+    def __init__(self, name):
+        super().__init__(name, health=140, attack_power=25, special_attack_power_max=50)
+    def special_ability_menu(self):
+        print("1. RAGE (Bonus Damage)")
+        print("2. Dodge (Dodge the next attack)")
+
+# Mage class (inherits from Character)
+class Mage(Character):
+    def __init__(self, name):
+        super().__init__(name, health=100, attack_power=35, special_attack_power_max=70)
+    def special_ability_menu(self):
+        print("1. Fireball (Bonus Damage)")
+        print("2. Invisibility (Dodge the next attack)")
+
+# Archer class (inherits from Character)
+class Archer(Character):
+    def __init__(self, name):
+        super().__init__(name, health=120, attack_power=30, special_attack_power_max=60)
+    def special_ability_menu(self):
+        print("1. Double Arrow Attack (Bonus Damage)")
+        print("2. Evade (Dodge the next attack)")
+
+# Paladin class (inherits from Character)
+class Paladin(Character):
+    def __init__(self, name):
+        super().__init__(name, health=160, attack_power=40, special_attack_power_max=60)
+    def special_ability_menu(self):
+        print("1. Holy Strike (Bonus Damage)")
+        print("2. Divine Shield (Block the next attack)")
+
+# Monk class (inherits from Character)
+class Monk(Character):
+    def __init__(self, name):
+        super().__init__(name, health=175, attack_power=30, special_attack_power_max=60)
+    def special_ability_menu(self):
+        print("1. Meditation (Bonus Damage)")
+        print("2. Prayer (Protects you from next attack)")
+
+# Assassin class (inherits from Character)
+class Assassin(Character):
+    def __init__(self, name):
+        super().__init__(name, health=75, attack_power=37, special_attack_power_max=74)
+    def special_ability_menu(self):
+        print("1. Killing Blow (Bonus Damage)")
+        print("2. Scatter (Dodge next attack)")
+
+# EvilWizard class (inherits from Character)
+class EvilWizard(Character):
+    def __init__(self, name):
+        super().__init__(name, health=150, attack_power=15, special_attack_power_max=0)
+
+    def regenerate(self):
+        self.health += 5
+        print(f"{self.name} regenerates 5 health! Current health: {self.health}")
+
+
+def create_character():
+    print("Choose your character class:")
+    print("1. Warrior")
+    print("2. Mage")
+    print("3. Archer") 
+    print("4. Paladin")  
+    print("5. Monk")  
+    print("6. Assassin")  
+
+    class_choice = input("Enter the number of your class choice: ")
+    name = input("Enter your character's name: ")
+
+    if class_choice == '1':
+        return Warrior(name)
+    elif class_choice == '2':
+        return Mage(name)
+    elif class_choice == '3':
+        return Archer(name)
+    elif class_choice == '4':
+        return Paladin(name)
+    elif class_choice == '5':
+        return Monk(name)
+    elif class_choice == '6':
+        return Assassin(name)
+    else:
+        print("Invalid choice. Defaulting to Warrior.")
+        return Warrior(name)
+    
+
+def battle(player, wizard):
+    while wizard.health > 0 and player.health > 0:
+        print("\n--- Your Turn ---")
+        print("1. Attack")
+        print("2. Use Special Ability")
+        print("3. Heal")
+        print("4. View Stats")
+
+        choice = input("Choose an action: ")
+
+        if choice == '1':
+            player.attack(wizard)
+        elif choice == '2':
+            player.special_ability(wizard)
+        elif choice == '3':
+            player.regenerate()
+        elif choice == '4':
+            player.display_stats()
+        else:
+            print("Invalid choice. Try again.")
+
+        if wizard.health > 0:
+            wizard.regenerate()
+            if player.block == True:
+                print (f"{wizard.name} attacks {player.name} but {player.name} has blocked {wizard.name}'s attack!")
+                player.block = False
+            else:
+                wizard.attack(player)
+
+        if player.health <= 0:
+            print(f"{player.name} has been defeated!")
+            break
+
+    if wizard.health <= 0:
+        print(f"The wizard {wizard.name} has been defeated by {player.name}!")
+
+def main():
+    player = create_character()
+    wizard = EvilWizard("The Dark Wizard")
+    battle(player, wizard)
+
+if __name__ == "__main__":
+    main()
